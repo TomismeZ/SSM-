@@ -1,0 +1,88 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="online.shixun.asl.module.department.dao.DepartmentDaoMyBatis">
+
+	<!-- 配置缓存规则 -->
+	<cache eviction="FIFO" flushInterval="600000" size="512" readOnly="true"/>
+
+	<!-- 获取部门列表 -->
+	<select id="getDepartments" resultType="DepartmentDTO" useCache="false">
+		SELECT
+			de.id,
+			de.code,
+			de.name,
+			de.description,
+			de.createTime
+		FROM
+			al_department de
+	</select>
+
+	<!-- 获取部门基本信息列表 -->
+	<select id="getSimpleDepartments" resultType="DepartmentDTO">
+		SELECT
+			de.id,
+			de.code,
+			de.name
+		FROM
+			al_department de
+	</select>
+
+	<!-- 根据id获取部门 -->
+	<select id="getDepartment" resultType="DepartmentDTO" flushCache="true">
+		SELECT
+			de.id,
+			de.code,
+			de.name,
+			de.description
+		FROM
+			al_department de
+		WHERE
+			de.id = #{id}
+	</select>
+	
+	<!-- 根据部门id获取部门编码 -->
+	<select id="getDepartmentCode" resultType="String">
+		SELECT
+			de.code
+		FROM	
+			al_department de
+		WHERE
+			de.id = #{departmentId}
+	</select>
+
+	<!-- 新增或更新部门 -->
+	<insert id="saveOrUpdateDepartment">
+		INSERT INTO al_department (
+			id,
+			code,
+			name,
+			description
+		) VALUES (
+			#{id},
+			#{code},
+			#{name},
+			#{description}
+		)
+		ON DUPLICATE KEY UPDATE
+			code = #{code},
+			name = #{name},
+			description = #{description}
+	</insert>
+	
+	<!-- 根据id删除部门 -->
+	<delete id="removeDepartment">
+		DELETE FROM
+			al_department
+		WHERE
+			id = #{departmentId}
+	</delete>
+	
+	<!-- 根据id删除多个部门 -->
+	<delete id="removeDepartments">
+		DELETE FROM
+			al_department
+		WHERE
+			id IN (${departmentIds})
+	</delete>
+
+</mapper>
